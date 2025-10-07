@@ -1,0 +1,35 @@
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+.vscode/
+
+### Logs ###
+logs/
+*.log
+*.tmp
+*.swp
+
+### Arquivos do sistema ###
+.DS_Store
+Thumbs.db
+
+### Cobertura de testes ###
+jacoco.exec
