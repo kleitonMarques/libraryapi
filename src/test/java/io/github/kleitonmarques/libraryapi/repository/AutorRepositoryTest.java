@@ -17,7 +17,7 @@ public class AutorRepositoryTest {
     AutorRepository repository;
 
     @Test
-    public void salvarTeste() {
+    public void salvarTest() {
         Autor autor = new Autor();
         autor.setNome("Maria");
         autor.setNacionalidade("Brasileiro");
