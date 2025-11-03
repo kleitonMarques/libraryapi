@@ -6,6 +6,7 @@ import io.github.kleitonmarques.libraryapi.model.Livro;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -93,5 +94,17 @@ class LivroRepositoryTest {
    void deletarCascade() {
       UUID id = UUID.fromString("a9e303bd-a782-442f-ab7d-95621dac2b38");
       repository.deleteById(id);
+   }
+
+   @Test
+   @Transactional
+   void buscarLivroTest() {
+      UUID id = UUID.fromString("d778b7e0-9c1e-4bc2-867a-ba8b293daf0a");
+      Livro livro = repository.findById(id).orElse(null);
+      System.out.println("Livro:");
+      System.out.println(livro.getTitulo());
+
+      System.out.println("Autor:");
+      System.out.println(livro.getAutor().getNome());
    }
 }
