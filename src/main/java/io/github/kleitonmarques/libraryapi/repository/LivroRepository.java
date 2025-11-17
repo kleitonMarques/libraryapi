@@ -1,9 +1,11 @@
 package io.github.kleitonmarques.libraryapi.repository;
 
 import io.github.kleitonmarques.libraryapi.model.Autor;
+import io.github.kleitonmarques.libraryapi.model.GeneroLivro;
 import io.github.kleitonmarques.libraryapi.model.Livro;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -36,15 +38,15 @@ public interface LivroRepository extends JpaRepository<Livro, UUID> {
 
     // JPQL - referencia as entidades e as propriedades
     // select l.* from livro as l order by l.titulo, l.preco
-    @Query(" select l from Livro as l order by l.titulo, l.preco")
+    @Query("select l from Livro as l order by l.titulo, l.preco")
     List<Livro> listarTodosOrdenadosPorTituloAndPreco();
 
     // select a.* from livro l join autor a on a.id = l.id_autor
-    @Query(" select a from Livro l join l.autor a ")
+    @Query("select a from Livro l join l.autor a")
     List<Autor> listarAutoresDosLivros();
 
     // select distinct l.* from livro l
-    @Query(" select distinct l.titulo from Livro l ")
+    @Query("select distinct l.titulo from Livro l")
     List<String> listarNomesDiferentesLivros();
 
     @Query("""
@@ -55,4 +57,15 @@ public interface LivroRepository extends JpaRepository<Livro, UUID> {
         order by l.genero
     """)
     List<String> listarGenerosAutoresBrasileiros();
+
+    // named parameters -> parametros nomeados
+    @Query("select l from Livro l where l.genero = :genero order by :paramOrdenacao")
+    List<Livro> findByGenero(
+            @Param("genero") GeneroLivro generoLivro,
+            @Param("paramOrdenacao") String nomePropriedade
+    );
+
+    // positional parameters
+    @Query("select l from Livro l where l.genero = ?2 order by ?1")
+    List<Livro> findByGeneroPositionalParameters(String nomePropriedade, GeneroLivro generoLivro);
 }
