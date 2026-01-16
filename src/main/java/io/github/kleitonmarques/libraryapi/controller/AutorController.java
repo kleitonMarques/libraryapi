@@ -1,6 +1,8 @@
 package io.github.kleitonmarques.libraryapi.controller;
 
 import io.github.kleitonmarques.libraryapi.controller.dto.AutorDTO;
+import io.github.kleitonmarques.libraryapi.controller.dto.ErroResposta;
+import io.github.kleitonmarques.libraryapi.exceptions.RegistroDuplicadoException;
 import io.github.kleitonmarques.libraryapi.model.Autor;
 import io.github.kleitonmarques.libraryapi.service.AutorService;
 import org.springframework.http.HttpStatus;
@@ -26,18 +28,23 @@ public class AutorController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> salvar(@RequestBody AutorDTO autor) {
-        Autor autorEntidade = autor.mapearParaAutor();
-        service.salvar(autorEntidade);
+    public ResponseEntity<Object> salvar(@RequestBody AutorDTO autor) {
+        try {
+            Autor autorEntidade = autor.mapearParaAutor();
+            service.salvar(autorEntidade);
 
-        // http://localhost:8080/autores/16d2dc16-d8cd-4cdf-bd2a-c04ad60411d9
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(autorEntidade.getId())
-                .toUri();
+            // http://localhost:8080/autores/16d2dc16-d8cd-4cdf-bd2a-c04ad60411d9
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(autorEntidade.getId())
+                    .toUri();
 
-        return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).build();
+        } catch (RegistroDuplicadoException e) {
+            var erroDTO = ErroResposta.conflito(e.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
+        }
     }
 
     @GetMapping("{id}")
