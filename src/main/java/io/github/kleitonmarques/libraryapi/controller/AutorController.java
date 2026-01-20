@@ -6,6 +6,7 @@ import io.github.kleitonmarques.libraryapi.exceptions.OperacaoNaoPermitidaExcept
 import io.github.kleitonmarques.libraryapi.exceptions.RegistroDuplicadoException;
 import io.github.kleitonmarques.libraryapi.model.Autor;
 import io.github.kleitonmarques.libraryapi.service.AutorService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +20,11 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("autores")
+@RequiredArgsConstructor
 // http://localhost:8080/autores
 public class AutorController {
 
     private final AutorService service;
-
-    public AutorController(AutorService service) {
-        this.service = service;
-    }
 
     @PostMapping
     public ResponseEntity<Object> salvar(@RequestBody AutorDTO autor) {
