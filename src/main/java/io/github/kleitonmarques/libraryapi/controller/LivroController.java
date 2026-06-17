@@ -1,10 +1,8 @@
 package io.github.kleitonmarques.libraryapi.controller;
 
 import io.github.kleitonmarques.libraryapi.controller.dto.CadastroLivroDTO;
-import io.github.kleitonmarques.libraryapi.controller.dto.ErroResposta;
 import io.github.kleitonmarques.libraryapi.controller.dto.ResultadoPesquisaLivroDTO;
 import io.github.kleitonmarques.libraryapi.controller.mappers.LivroMapper;
-import io.github.kleitonmarques.libraryapi.exceptions.RegistroDuplicadoException;
 import io.github.kleitonmarques.libraryapi.model.GeneroLivro;
 import io.github.kleitonmarques.libraryapi.model.Livro;
 import io.github.kleitonmarques.libraryapi.service.LivroService;
@@ -72,5 +70,22 @@ public class LivroController implements GenericController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(lista);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Object> atualizar(
+            @PathVariable("id") String id, @RequestBody @Valid CadastroLivroDTO dto) {
+        return service.obterPorId(UUID.fromString(id))
+                .map(livro -> {
+                    Livro entidadeAux = mapper.toEntity(dto);
+                    livro.setDataPublicacao(entidadeAux.getDataPublicacao());
+                    livro.setIsbn(entidadeAux.getIsbn());
+                    livro.setPreco(entidadeAux.getPreco());
+                    livro.setGenero(entidadeAux.getGenero());
+                    livro.setTitulo(entidadeAux.getTitulo());
+                    livro.setAutor(entidadeAux.getAutor());
+                    service.atualizar(livro);
+                    return ResponseEntity.noContent().build();
+                }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
