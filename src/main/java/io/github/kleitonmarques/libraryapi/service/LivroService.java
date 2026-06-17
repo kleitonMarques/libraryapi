@@ -4,6 +4,7 @@ import io.github.kleitonmarques.libraryapi.model.GeneroLivro;
 import io.github.kleitonmarques.libraryapi.model.Livro;
 import io.github.kleitonmarques.libraryapi.repository.LivroRepository;
 import io.github.kleitonmarques.libraryapi.repository.specs.LivroSpecs;
+import io.github.kleitonmarques.libraryapi.validator.LivroValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,10 @@ import static io.github.kleitonmarques.libraryapi.repository.specs.LivroSpecs.*;
 public class LivroService {
 
     private final LivroRepository repository;
+    private final LivroValidator validator;
 
     public Livro salvar(Livro livro) {
+        validator.validar(livro);
         return repository.save(livro);
     }
 
@@ -71,6 +74,7 @@ public class LivroService {
             throw new IllegalArgumentException("Para atualizar, é necessário que o livro já esteja salvo na base.");
         }
 
+        validator.validar(livro);
         repository.save(livro);
     }
 }
