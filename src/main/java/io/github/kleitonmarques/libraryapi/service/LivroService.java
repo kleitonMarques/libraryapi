@@ -2,8 +2,10 @@ package io.github.kleitonmarques.libraryapi.service;
 
 import io.github.kleitonmarques.libraryapi.model.GeneroLivro;
 import io.github.kleitonmarques.libraryapi.model.Livro;
+import io.github.kleitonmarques.libraryapi.model.Usuario;
 import io.github.kleitonmarques.libraryapi.repository.LivroRepository;
 import io.github.kleitonmarques.libraryapi.repository.specs.LivroSpecs;
+import io.github.kleitonmarques.libraryapi.security.SecurityService;
 import io.github.kleitonmarques.libraryapi.validator.LivroValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,9 +26,12 @@ public class LivroService {
 
     private final LivroRepository repository;
     private final LivroValidator validator;
+    private final SecurityService securityService;
 
     public Livro salvar(Livro livro) {
         validator.validar(livro);
+        Usuario usuario = securityService.obterUsuarioLogado();
+        livro.setUsuario(usuario);
         return repository.save(livro);
     }
 
